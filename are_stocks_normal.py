@@ -266,7 +266,7 @@ if valid:
 
                 ### Black Monday October 19th 1987 ###
                 The 1987 stock market crash, known as **Black Monday**, 
-                saw the Dow Jones drop about **22% in a single day**!
+                saw the S&P500 drop about 23% in a single day! (You can see this as the biggest drop in data above).
                 A contributing factor was the widespread use and 'abuse' of the Black-Scholes option pricing model.
 
                 Traders relied on Black-Scholes to price options and hedge positions dynamically. 
