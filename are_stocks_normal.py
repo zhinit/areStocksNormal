@@ -9,15 +9,22 @@ from datetime import date
 from scipy import stats
 from scipy.special import erfinv
 
-@st.cache_data
-def fetch_stock_data(ticker, interval, start, end):
-    raw = yf.download(ticker, interval=interval, start=start, end=end, auto_adjust=True)
+def process_stock_data(raw):
     if len(raw) == 0:
         return pd.DataFrame()
     data = raw[['Close']].copy()
     data.columns = data.columns.droplevel(1)
     data['return'] = np.log(data['Close'] / data['Close'].shift(1))
     return data.iloc[1:].copy()
+
+@st.cache_data
+def fetch_stock_data_cached(ticker, interval, start, end):
+    raw = yf.download(ticker, interval=interval, start=start, end=end, auto_adjust=True)
+    return process_stock_data(raw)
+
+def fetch_stock_data(ticker, interval, start, end):
+    raw = yf.download(ticker, interval=interval, start=start, end=end, auto_adjust=True)
+    return process_stock_data(raw)
 
 # TITLE
 st.title('Do Stock Returns Follow a Normal Distribution (AKA Bell Curve🔔)?')
@@ -48,7 +55,11 @@ ui_start = date(ui_start_year, ui_start_month, 1)
 ui_end = date(ui_end_year, ui_end_month, 28)
 
 # PULL DATA
-data = fetch_stock_data(ui_ticker, ui_interval, ui_start, ui_end)
+end_is_current_or_future = (ui_end_year > curr_year) or (ui_end_year == curr_year and ui_end_month >= curr_month)
+if end_is_current_or_future:
+    data = fetch_stock_data(ui_ticker, ui_interval, ui_start, ui_end)
+else:
+    data = fetch_stock_data_cached(ui_ticker, ui_interval, ui_start, ui_end)
 
 if len(data) > 30:
     valid = True
