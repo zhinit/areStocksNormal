@@ -27,7 +27,7 @@ def fetch_stock_data(ticker, interval, start, end):
     return process_stock_data(raw)
 
 # TITLE
-st.title('Do Stock Returns Follow a Normal Distribution (AKA Bell Curve🔔)?')
+st.title('Do Stock Returns Follow a Normal Distribution (AKA Bell Curve)?')
 st.markdown('#')
 
 # USER INPUT
@@ -82,24 +82,24 @@ if valid:
 
     skew = np.power((data['return'] - mu)/std, 3).sum()*n/((n-1)*(n-2))
     if skew < -0.5:
-        skew_msg = ('the distribution has a long left tail because people were panic selling!📉🫨 '
+        skew_msg = ('the distribution has a long left tail because people were panic selling!'
         'This indicates the returns do not follow a normal distribution')
     elif skew < 0.5:
         skew_msg = ('the distribution is relatively symmetric '
         'This indicates the returns follow a normal distribution')
     else:
-        skew_msg = ('the distribution has a long right tail because people are euphoric buying!🚀 '
+        skew_msg = ('the distribution has a long right tail because people are euphoric buying!'
         'This indicates the returns do not follow a normal distribution')
 
     ex_kurt = np.power((data['return'] - mu)/std, 4).sum()*n*(n+1)/((n-1)*(n-2)*(n-3)) - 3*(n-1)**2 / ((n-2)*(n-3))
     if ex_kurt < -0.5:
-        kurt_msg = ('the distribution has light 🐥 tails because this stock is boring and doesnt move much. '
+        kurt_msg = ('the distribution has light tails because this stock is boring and doesnt move much. '
         'This indicates the returns do not follow a normal distribution')
     elif ex_kurt < 0.5:
         kurt_msg = ('the distribution has "normal" weight in the tails '
         'This indicates the returns follow a normal distribution')
     else:
-        kurt_msg = ('the distribution has heavy 🦍 tails because the stock has extreme price moves. '
+        kurt_msg = ('the distribution has heavy tails because the stock has extreme price moves. '
         'This is likely due to earnings reports and investors reacting to breaking news! '
         'This indicates the returns do not follow a normal distribution')
 
@@ -259,7 +259,7 @@ if valid:
                 So having an in depth understanding of this assumption is critical. 
                 Assuming normality often makes modeling stock returns feasible, 
                 but it should be understood that in reality 
-                stock returns tend to have **negative skew** from panic sellers 🫨📉 
+                stock returns tend to have **negative skew** from panic sellers 
                 and **fat tails** from breaking news, earnings reports, panic selling and FOMO buying.\n
 
                 Here are a few specific examples of real-world implications:
@@ -280,7 +280,7 @@ if valid:
                 such as TVaR.
 
                 ### Black Monday October 19th 1987 ###
-                The 1987 stock market crash, known as **Black Monday**, 
+                The 1987 stock market crash, known as Black Monday, 
                 saw the S&P500 drop about 23% in a single day! (You can see this as the biggest drop in data above).
                 A contributing factor was the widespread use and 'abuse' of the Black-Scholes option pricing model.
 
