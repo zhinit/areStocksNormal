@@ -11,12 +11,13 @@ from scipy.special import erfinv
 
 @st.cache_data
 def fetch_stock_data(ticker, interval, start, end):
-    data = yf.download(ticker, interval=interval, start=start, end=end, auto_adjust=True)
-    if len(data) > 0:
-        data = data[['Close']].copy()
-        data.columns = data.columns.droplevel(1)
-        data['return'] = np.log(data['Close'] / data['Close'].shift(1))
-        data.drop(data.index[0], inplace=True)
+    raw = yf.download(ticker, interval=interval, start=start, end=end, auto_adjust=True)
+    if len(raw) == 0:
+        return pd.DataFrame()
+    data = raw[['Close']].copy()
+    data.columns = data.columns.droplevel(1)
+    data['return'] = np.log(data['Close'] / data['Close'].shift(1))
+    data = data.iloc[1:]
     return data
 
 # TITLE
