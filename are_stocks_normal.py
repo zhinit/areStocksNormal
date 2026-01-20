@@ -9,17 +9,6 @@ from datetime import date
 from scipy import stats
 from scipy.special import erfinv
 
-@st.cache_data
-def fetch_stock_data(ticker, interval, start, end):
-    raw = yf.download(ticker, interval=interval, start=start, end=end, auto_adjust=True)
-    if len(raw) == 0:
-        return pd.DataFrame()
-    data = raw[['Close']].copy()
-    data.columns = data.columns.droplevel(1)
-    data['return'] = np.log(data['Close'] / data['Close'].shift(1))
-    data = data.iloc[1:]
-    return data
-
 # TITLE
 st.title('Do Stock Returns Follow a Normal Distribution (AKA Bell Curve🔔)?')
 st.markdown('#')
@@ -49,7 +38,7 @@ ui_start = date(ui_start_year, ui_start_month, 1)
 ui_end = date(ui_end_year, ui_end_month, 28)
 
 # PULL DATA
-data = fetch_stock_data(ui_ticker, ui_interval, ui_start, ui_end)
+data = yf.download(ui_ticker, interval=ui_interval, start=ui_start, end=ui_end, auto_adjust=True)
 
 if len(data) > 30:
     valid = True
@@ -59,6 +48,12 @@ else:
     st.write("Please adjust the start date, end date and/or interval and try again.")
 
 if valid:
+    # CLEAN DATA
+    data = data[['Close']].copy()
+    data.columns = data.columns.droplevel(1)
+    data['return'] = np.log(data['Close'] / data['Close'].shift(1))
+    data.drop(data.index[0], inplace=True)
+
     # PERFORM ANALYSIS
     mu = data['return'].mean()
     biggest_gain = data['return'].max()
