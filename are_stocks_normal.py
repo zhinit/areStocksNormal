@@ -11,6 +11,11 @@ from scipy.special import erfinv
 
 
 def process_stock_data(raw):
+    """
+    convert data
+    from: raw yfinance data
+    to: clean column of log returns for ticker
+    """
     if len(raw) == 0:
         return pd.DataFrame()
     data = raw[["Close"]].copy()
@@ -20,6 +25,11 @@ def process_stock_data(raw):
 
 
 def download_with_retry(ticker, interval, start, end, retries=3):
+    """
+    yfinance takes a second to establish a connection
+    so somtimes the first request fails
+    thus we just do a few retries
+    """
     for _ in range(retries):
         raw = yf.download(
             ticker, interval=interval, start=start, end=end, auto_adjust=True
@@ -31,10 +41,19 @@ def download_with_retry(ticker, interval, start, end, retries=3):
 
 @st.cache_data
 def fetch_stock_data_cached(ticker, interval, start, end):
+    """
+    cache query results once the data is populated
+    """
     return download_with_retry(ticker, interval, start, end)
 
 
 def fetch_stock_data(ticker, interval, start, end):
+    """
+    dont cahce query results if the data is not fully populated
+    for example on april 3rd we dont want to cache 3 (or less) days of data for april
+    before we get the full data for april
+    we want to wait to cach the whole month of data
+    """
     return download_with_retry(ticker, interval, start, end)
 
 
@@ -87,6 +106,9 @@ ui_start = date(ui_start_year, ui_start_month, 1)
 ui_end = date(ui_end_year, ui_end_month, 28)
 
 # PULL DATA
+
+# if the end time is the current date on in the future
+# we dont want to cach because then it will cache the empty result
 end_is_current_or_future = (ui_end_year > curr_year) or (
     ui_end_year == curr_year and ui_end_month >= curr_month
 )
@@ -95,6 +117,7 @@ if end_is_current_or_future:
 else:
     data = fetch_stock_data_cached(ui_ticker, ui_interval, ui_start, ui_end)
 
+# only perform analysis on statistically significant amount of data
 if len(data) > 30:
     valid = True
 else:
