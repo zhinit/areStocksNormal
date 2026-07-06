@@ -2,6 +2,8 @@
 
 An interactive Streamlit app that investigates whether stock market returns follow a normal distribution (bell curve). Many financial models assume normality. This tool helps you see when that assumption breaks down.
 
+**[Try the live app](https://arestocksnormal.streamlit.app/)**
+
 ## Why This Matters
 
 Financial models like Black-Scholes assume stock returns are normally distributed. In reality, markets exhibit:
